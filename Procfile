@@ -1,0 +1,1 @@
+web: gunicorn cicloviaa.wsgi --log-file -
