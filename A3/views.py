@@ -1,5 +1,6 @@
 import datetime
 
+import psycopg2
 from django.shortcuts import render
 import sqlite3
 
@@ -8,6 +9,13 @@ def addpf(request):
     now = datetime.datetime.now()
 
     now = now = now.astimezone()
+
+    con = psycopg2.connect(
+        "host='ec2-184-73-169-163.compute-1.amazonaws.com' dbname='d9ir03ok1rn1j8' user='rumtiwmezjfhkm' password='83ebef2592e91bc65b39f5e61e54e85cc1150546a0e463f4d55f53ca5e2a84ff'")
+    cur = con.cursor()
+
+    cur.execute("SELECT id FROM energias_inscritos WHERE cedula = %s AND cedula = %s", (cc, cc))
+    row = cur.fetchall()
 
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()  # The database will be saved in the location where your 'py' file is saved
