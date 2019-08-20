@@ -43,3 +43,11 @@ class Corredor(models.Model):
 
     def __str__(self):
         return self.nombre_del_corredor
+
+ # BD de imagenes
+class Images(models.Model):
+    nombre = models.CharField(max_length=100, blank=True, null=True)
+    imagen = models.ImageField(upload_to='imagen', blank=True)
+
+    def __str__(self):
+        return self.nombre

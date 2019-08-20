@@ -31,7 +31,10 @@ def addpf(request):
     #           "INNER JOIN A3_PuntosFijos AS pf ON cp.puntosfijos_id = pf.id")
     # c1 = c.fetchall()
 
-    cur.execute('SELECT co.id, co.nombre_del_corredor, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id;')
+    cur.execute('SELECT co.id, co.nombre_del_corredor, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion, co.hora_de_ingreso, co.hora_de_salida FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id;')
     corredor = cur.fetchall()
 
-    return render(request, 'addPuntosFijos.html', {'data':c1, 'now':now, 'corredor':corredor})
+    cur.execute('SELECT * FROM "A3_images" ;')
+    imagenes = cur.fetchall()
+
+    return render(request, 'addPuntosFijos.html', {'data':c1, 'now':now, 'corredor':corredor, 'imagenes':imagenes})

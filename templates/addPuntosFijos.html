@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,19 +23,40 @@
       .my-auto{
           padding-top: 2% !important;
       }
+      .table td, .table th {
+          padding: unset;
+      }
+      body{
+          padding-left: 2%;
+          padding-right: 2%;
+          padding-top: 3%;
+      }
 
   </style>
   <body>
   <link rel="stylesheet" type="text/css" href="/Content/font-awesome/css/font-awesome.min.css" />
 
-<button onclick="exportTableToExcel('tblData')">Descargar excel</button>
-  <input type="button" id="btnExport" value="Descargar PDF" onclick="Export()" />
-    <h1>Reporte de Corredores</h1>
-    <br><br><br>
 
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm col-8" style="width: 40%; text-align: left;">
+      <h1>Reporte de Corredores</h1>
+    </div>
+    <div class="col-sm col-4" style="width: 40%; text-align: right;">
+      <button class="btn btn-primary btn-lg disabled" onclick="exportTableToExcel('tblData')">Descargar excel</button>
+  <input class="btn btn-primary btn-lg disabled" type="button" id="btnExport" value="Descargar PDF" onclick="Export()" />
+    </div>
+  </div>
+</div>
+
+    <br><br>
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm">
     <table class="table table-striped" id="tblData" class="table table-hover">
   <thead>
-  <tr>
+{#  <th scope="col" class="text-center" colspan="9"><img  class="rounded mx-auto d-block" src='idrd.jpg'></th>#}
+  <tr style="background-color: darkgray">
       <th scope="col" class="text-center" colspan="9">UNIDADES DE APOYO PUNTO FIJO POLICIA NACIONAL</th>
   </tr>
     <tr>
@@ -42,10 +64,14 @@
       <th scope="col" class="text-center" colspan="3">CORREDOR: {{ corredor.0.1 }}</th>
       <th scope="col" class="text-center" colspan="3">REPONSABLE DE CORREDOR: {{ corredor.0.3 }} {{ corredor.0.4 }}</th>
   </tr>
+      <tr>
+      <th scope="col" class="text-center" colspan="4">HORA INICIO: {{ corredor.0.6 }}</th>
+      <th scope="col" class="text-center" colspan="3">HORA FINALIZACION: {{ corredor.0.7 }}</th>
+  </tr>
     <tr>
       <th scope="col" class="text-center" colspan="9">DIRECCION EN LA QUE OCURRE EL EVENTO O ACTIVACIÓN: {{ corredor.0.5 }}</th>
   </tr>
-    <tr>
+    <tr style="background-color: darkgray">
         <th scope="col" class="text-center">No</th>
       <th scope="col" class="text-center">INSTITUCION O ALIANZA </th>
       <th scope="col" class="text-center">LUGAR DE UBICACIÓN</th>
@@ -60,7 +86,7 @@
   <tbody>
   {% for corredor in data %}
     <tr>
-      <th scope="row my-auto">{{ forloop.counter }}</th>
+      <th class="my-auto text-center" scope="row my-auto" >{{ forloop.counter }}</th>
       <td class="my-auto text-center">{{ corredor.0 }}</td>
       <td class="my-auto text-center">{{ corredor.1 }}</td>
       <td class="my-auto text-center">{{ corredor.2 }}</td>
@@ -74,7 +100,9 @@
   {% endfor %}
   </tbody>
 </table>
-
+    </div>
+  </div>
+</div>
 <!-- you need to include the shieldui css and js assets in order for the components to work -->
 <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
 <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
