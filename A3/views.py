@@ -5,7 +5,7 @@ from django.shortcuts import render
 import sqlite3
 
 # Create your views here.
-def addpf(request):
+def addpf(request, num):
     now = datetime.datetime.now()
 
     now = now = now.astimezone()
@@ -14,7 +14,7 @@ def addpf(request):
         "host='ec2-184-73-169-163.compute-1.amazonaws.com' dbname='d9ir03ok1rn1j8' user='rumtiwmezjfhkm' password='83ebef2592e91bc65b39f5e61e54e85cc1150546a0e463f4d55f53ca5e2a84ff'")
     cur = con.cursor()
 
-    cur.execute('SELECT ins.nombre, pf.direccion, pf.nombre, pf.hora_de_ingreso, pf.hora_de_salida, pf.numero_de_chaleco, pf.novedad FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_puntos" AS cp, "A3_puntosfijos" AS pf WHERE ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.puntosfijos_id');
+    cur.execute('SELECT ins.nombre, pf.direccion, pf.nombre, pf.hora_de_ingreso, pf.hora_de_salida, pf.numero_de_chaleco, pf.novedad FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_puntos" AS cp, "A3_puntosfijos" AS pf WHERE ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.puntosfijos_id and co.id=%s and co.id=%s', (num, num));
     c1 = cur.fetchall()
 
     # conn = sqlite3.connect('db.sqlite3')
@@ -31,10 +31,13 @@ def addpf(request):
     #           "INNER JOIN A3_PuntosFijos AS pf ON cp.puntosfijos_id = pf.id")
     # c1 = c.fetchall()
 
-    cur.execute('SELECT co.id, co.nombre_del_corredor, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion, co.hora_de_ingreso, co.hora_de_salida FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id;')
+    cur.execute('SELECT co.id, co.nombre_del_corredor, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion, co.hora_de_ingreso, co.hora_de_salida FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id WHERE co.id= %s and co.id=%s', (num, num))
     corredor = cur.fetchall()
+
+    cur.execute('SELECT co.id, co.nombre_del_corredor FROM "A3_corredor" AS co ;')
+    corlista = cur.fetchall()
 
     cur.execute('SELECT * FROM "A3_images" ;')
     imagenes = cur.fetchall()
 
-    return render(request, 'addPuntosFijos.html', {'data':c1, 'now':now, 'corredor':corredor, 'imagenes':imagenes})
+    return render(request, 'addPuntosFijos.html', {'data':c1, 'now':now, 'corredor':corredor, 'imagenes':imagenes, 'listacorredor':corlista})

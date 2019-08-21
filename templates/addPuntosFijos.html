@@ -41,7 +41,15 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-sm col-8" style="width: 40%; text-align: left;">
-      <h1>Reporte de Corredores</h1>
+      <h1 style="color: #007bff">Informe Ponal</h1>
+        <select id="mySelect" onchange="myFunction()">
+        <option >--Seleccione un corredor...</option>
+            {% for data in listacorredor %}
+                <option value={{ data.0 }}>{{ data.1 }}</option>
+            {% endfor %}
+
+</select>
+    <input style="display: none" type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar por nombre de la alerta..." title="Buscar" >
     </div>
     <div class="col-sm col-4" style="width: 40%; text-align: right;">
       <button class="btn btn-primary btn-lg disabled" onclick="exportTableToExcel('tblData')">Descargar excel</button>
@@ -60,7 +68,7 @@
       <th scope="col" class="text-center" colspan="9">UNIDADES DE APOYO PUNTO FIJO POLICIA NACIONAL</th>
   </tr>
     <tr>
-      <th scope="col" class="text-center" colspan="3">FECHA: {{ now }}</th>
+      <th scope="col" class="text-center" colspan="3">FECHA: {{ corredor.0.2 }}</th>
       <th scope="col" class="text-center" colspan="3">CORREDOR: {{ corredor.0.1 }}</th>
       <th scope="col" class="text-center" colspan="3">REPONSABLE DE CORREDOR: {{ corredor.0.3 }} {{ corredor.0.4 }}</th>
   </tr>
@@ -115,7 +123,19 @@
         border-radius: 0;
     }
 </style>
+<script>
+function myFunction() {
 
+    var x = document.getElementById("mySelect").value;
+
+  document.getElementById("myInput").value = x;
+
+  console.log(window.location.host);
+
+  window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(x);
+
+    }
+</script>
   <script>
       function exportTableToExcel(tableID, filename = ''){
     var downloadLink;
@@ -170,7 +190,7 @@
                             width: 500
                         }]
                     };
-                    pdfMake.createPdf(docDefinition).download("Table.pdf");
+                    pdfMake.createPdf(docDefinition).download("InformePonal.pdf");
                 }
             });
         }
