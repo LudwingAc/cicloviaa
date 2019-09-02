@@ -34,62 +34,6 @@
           padding-right: 2%;
           padding-top: 3%;
       }
-      .container {
-  overflow: hidden;
-}
-
-.filterDiv {
-    float: left;
-    background-color: #2196F3;
-    color: #ffffff;
-    width: 190px;
-    line-height: 47px;
-    text-align: center;
-    margin: 4px;
-  display: none; /* Hidden by default */
-}
-
-/* The "show" class is added to the filtered elements */
-.show {
-  display: block;
-}
-
-/* Style the buttons */
-.btn {
-  border: none;
-  outline: none;
-  padding: 12px 16px;
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
-
-/* Add a light grey background on mouse-over */
-.btn:hover {
-  background-color: #ddd;
-}
-
-/* Add a dark background to the active button */
-.btn.active {
-  background-color: #666;
-  color: white;
-}
-   .btn2:hover {
-  background-color: #384e66;
-}
-
-/* Add a dark background to the active button */
-.btn2.active {
-  background-color: #384e66;
-  color: white;
-}
-@media screen and (max-width: 600px) {
-    .btn{
-        font-size: xx-small;
-    }
-    .btn2{
-        font-size: xx-small;
-    }
-}
 
   </style>
   <body>
@@ -99,23 +43,16 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-sm col-8" style="width: 40%; text-align: left;">
-      <h1 style="color: #007bff">Informe Ponal</h1>
-{#        <select id="mySelect" onchange="myFunction()">#}
-{#        <option >--Seleccione un corredor...</option>#}
-{#            {% for data in listacorredor %}#}
-{#                <option value={{ data.0 }}>{{ data.1 }} - {{ data.2 }}</option>#}
-{#            {% endfor %}#}
-{##}
-{#</select>#}
+      <h1 style="color: #007bff">Informe Ponal General</h1>
 
-
-{#    <form method="post">#}
-{#    {% csrf_token %}#}
-{#    {{ form }}#}
-{#    <br><br>#}
-{#    <input type="submit" value="Filtrar" type="button" class="btn btn-outline-success">#}
-{#</form>#}
-
+    <br>
+    <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <br><br>
+    <input type="submit" value="Filtrar" type="button" class="btn btn-outline-success">
+</form>
+    <br>
 
     <input style="display: none" type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar por nombre de la alerta..." title="Buscar" >
     </div>
@@ -124,29 +61,11 @@
   <input class="btn btn-primary btn-lg disabled" type="button" id="btnExport" value="Descargar PDF" onclick="Export()" />
     </div>
   </div>
-      <div class="row">
-          <!-- Control buttons -->
-<div id="myBtnContainer">
-<button class="btn active" onclick="filterSelection('all')"> Mostrar Todos</button>
-    {% for data in listacorredor %}
-        <button class="btn" onclick="filterSelection({{ data.0 }})"> {{ data.1 }}</button>
-    {% endfor %}
-</div>
-      </div>
-  <div class="row">
-<!-- The filterable elements. Note that some have multiple class names (this can be used if they belong to multiple categories) -->
-<div class="container1">
-    {% for data in filtro %}
-        <div class="btn2 filterDiv {{ data.8 }}" onclick="filterSelection2({{ data.8 }})">{{ data.2 }}</div>
-    {% endfor %}
-
-</div>
-      </div>
 </div>
 
   <div class="container-fluid">
   <div class="row">
-    <div class="col-sm table-responsive-sm">
+    <div class="col-sm">
     <table class="table table-striped" id="tblData" class="table table-hover">
   <thead>
   <th scope="col" class="text-center" colspan="9"><img  class="rounded mx-auto d-block" src='/media/{{ imagenes.0.2 }}'></th>
@@ -209,20 +128,7 @@
         border-radius: 0;
     }
 </style>
-<script>
-function myFunction() {
 
-    var x = document.getElementById("mySelect").value;
-
-  document.getElementById("myInput").value = x;
-
-  console.log(window.location.host);
-
-  window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(x);
-  {#window.location.href = "http://127.0.0.1:8080/reporte/".concat(x);#}
-
-    }
-</script>
   <script>
    $("#id_f1").click(function(){
         $(this).prop('type', 'date');
@@ -261,63 +167,6 @@ function myFunction() {
         //triggering the function
         downloadLink.click();
     }
-}
-  </script>
-
-  <script>
-      function filterSelection2(c) {
-          window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(x);
-            {#window.location.href = "http://127.0.0.1:8080/reporte/".concat(c);#}
-      }
-  </script>
-
-  <script>
-      filterSelection("all")
-function filterSelection(c) {
-  var x, i;
-  x = document.getElementsByClassName("filterDiv");
-  if (c == "all") c = "";
-  // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
-  for (i = 0; i < x.length; i++) {
-    w3RemoveClass(x[i], "show");
-    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
-  }
-}
-
-// Show filtered elements
-function w3AddClass(element, name) {
-  var i, arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  for (i = 0; i < arr2.length; i++) {
-    if (arr1.indexOf(arr2[i]) == -1) {
-      element.className += " " + arr2[i];
-    }
-  }
-}
-
-// Hide elements that are not selected
-function w3RemoveClass(element, name) {
-  var i, arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  for (i = 0; i < arr2.length; i++) {
-    while (arr1.indexOf(arr2[i]) > -1) {
-      arr1.splice(arr1.indexOf(arr2[i]), 1);
-    }
-  }
-  element.className = arr1.join(" ");
-}
-
-// Add active class to the current control button (highlight it)
-var btnContainer = document.getElementById("myBtnContainer");
-var btns = btnContainer.getElementsByClassName("btn");
-for (var i = 0; i < btns.length; i++) {
-  btns[i].addEventListener("click", function() {
-    var current = document.getElementsByClassName("active");
-    current[0].className = current[0].className.replace(" active", "");
-    this.className += " active";
-  });
 }
   </script>
 
