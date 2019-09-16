@@ -258,11 +258,28 @@
       <td class="my-auto text-center" colspan="2">{{ corredor.0 }}</td>
       <td class="my-auto text-center" colspan="2">{{ corredor.1 }}</td>
       <td class="my-auto text-center" colspan="2">{{ corredor.2 }}</td>
-      <td class="my-auto text-center" colspan="1"></td>
-      <td class="my-auto text-center" colspan="1"></td>
-      <td class="my-auto text-center" colspan="1"></td>
-      <td class="my-auto text-center" colspan="1"></td>
-      <td class="my-auto text-center" colspan="3"></td>
+        {% if corredor.5 %}
+            <td class="my-auto text-center" colspan="1">SI</td>
+            {% else %}
+            <td class="my-auto text-center" colspan="1">-</td>
+        {% endif %}
+            {% if corredor.6 %}
+            <td class="my-auto text-center" colspan="1">SI</td>
+            {% else %}
+            <td class="my-auto text-center" colspan="1">-</td>
+        {% endif %}
+            {% if corredor.7 %}
+            <td class="my-auto text-center" colspan="1">SI</td>
+            {% else %}
+            <td class="my-auto text-center" colspan="1">-</td>
+        {% endif %}
+            {% if corredor.8 %}
+            <td class="my-auto text-center" colspan="1">SI</td>
+            {% else %}
+            <td class="my-auto text-center" colspan="1">-</td>
+        {% endif %}
+
+      <td class="my-auto text-center" colspan="3">{{ corredor.4 }}</td>
 
     </tr>
   {% endfor %}

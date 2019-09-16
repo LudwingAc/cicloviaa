@@ -39,9 +39,8 @@ def operativo(request, num, pag):
         "host='ec2-184-73-169-163.compute-1.amazonaws.com' dbname='d9ir03ok1rn1j8' user='rumtiwmezjfhkm' password='83ebef2592e91bc65b39f5e61e54e85cc1150546a0e463f4d55f53ca5e2a84ff'")
     cur = con.cursor()
 
-    cur.execute('SELECT pf.nombre, tdp.nombre, pf.numero_de_contacto FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_puntos" AS cp, "A3_puntosfijos" AS pf, "A3_tipodecorredor" AS tdp WHERE tdp.id=co.tipo_de_corredor_id and ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.puntosfijos_id AND co.id=%s and co.id=%s',(pag,pag))
+    cur.execute('SELECT ins.nombre, pf.direccion, pf.nombre, pf.numero_de_contrato, pf.novedad, pf.asistio, pf.inasistio, pf.retardo, pf.devolucion FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_guardianes" AS cp, "A3_guardianes" AS pf, "A3_tipodecorredor" AS tdp WHERE tdp.id=co.tipo_de_corredor_id and ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.guardianes_id ');
     c1 = cur.fetchall()
-    print(c1)
 
     # if(desde!='' and hasta !=''):
     #     cur.execute('SELECT co.id, tdp.nombre, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion, co.hora_de_ingreso, co.hora_de_salida FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id INNER JOIN "A3_tipodecorredor" AS tdp  ON tdp.id=co.tipo_de_corredor_id WHERE co.id= %s and co.id=%s and co.fecha_de_creacion = %s and co.fecha_de_creacion = %s', (num, num, desde, hasta))
@@ -63,10 +62,10 @@ def operativo(request, num, pag):
     cur.execute('SELECT co.desarrollo_de_la_jornada FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id INNER JOIN "A3_tipodecorredor" AS tdp  ON tdp.id=co.tipo_de_corredor_id WHERE co.id=%s and co.id=%s',(pag,pag))
     desarrollo = cur.fetchall()
 
-    cur.execute('SELECT er.* FROM public."A3_corredor" AS co, "A3_corredor_eventos_realizados" AS ce, "A3_eventosrealizados" AS er WHERE co.id=%s and co.id=%s',(pag,pag))
+    cur.execute('SELECT er.* FROM public."A3_corredor" AS co, "A3_corredor_eventos_realizados" AS ce, "A3_eventosrealizados" AS er WHERE co.id=%s and ce.corredor_id = %s',(pag,pag))
     eventos = cur.fetchall()
 
-    cur.execute('SELECT ac.* FROM public."A3_corredor" AS co, "A3_corredor_activaciones" AS ap, "A3_activacionesyproyectosrealizados" AS ac WHERE co.id=%s and co.id=%s',(pag,pag))
+    cur.execute('SELECT ac.* FROM public."A3_corredor" AS co, "A3_corredor_activaciones" AS ap, "A3_activacionesyproyectosrealizados" AS ac WHERE co.id=%s and ap.corredor_id =%s',(pag,pag))
     activaciones = cur.fetchall()
 
     cur.execute('SELECT uda.* FROM "A3_corredor" AS co INNER JOIN "A3_corredor_unidades_de_apoyo" AS cua ON cua.corredor_id = co.id INNER JOIN "A3_unidadesdeapoyo" AS uda  ON cua.unidadesdeapoyo_id=uda.id WHERE co.id=%s and co.id=%s',(pag,pag))
@@ -115,7 +114,7 @@ def addpf(request, num, pag):
         "host='ec2-184-73-169-163.compute-1.amazonaws.com' dbname='d9ir03ok1rn1j8' user='rumtiwmezjfhkm' password='83ebef2592e91bc65b39f5e61e54e85cc1150546a0e463f4d55f53ca5e2a84ff'")
     cur = con.cursor()
 
-    cur.execute('SELECT ins.nombre, pf.direccion, pf.nombre, pf.hora_de_ingreso, pf.hora_de_salida, pf.numero_de_chaleco, pf.novedad, co.id FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_puntos" AS cp, "A3_puntosfijos" AS pf, "A3_tipodecorredor" AS tdp WHERE tdp.id=co.tipo_de_corredor_id and ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.puntosfijos_id and co.tipo_de_corredor_id= %s and co.id=%s', (num, pag));
+    cur.execute('SELECT uda.* FROM "A3_corredor" AS co INNER JOIN "A3_corredor_unidades_de_apoyo" as cuda ON cuda.corredor_id = co.id INNER JOIN "A3_unidadesdeapoyo" AS uda ON uda.id = cuda.unidadesdeapoyo_id WHERE co.id=%s and co.id=%s',(pag,pag));
     c1 = cur.fetchall()
     print(c1)
 
@@ -165,8 +164,9 @@ def general(request):
         "host='ec2-184-73-169-163.compute-1.amazonaws.com' dbname='d9ir03ok1rn1j8' user='rumtiwmezjfhkm' password='83ebef2592e91bc65b39f5e61e54e85cc1150546a0e463f4d55f53ca5e2a84ff'")
     cur = con.cursor()
 
-    cur.execute('SELECT ins.nombre, pf.direccion, pf.nombre, pf.hora_de_ingreso, pf.hora_de_salida, pf.numero_de_chaleco, pf.novedad FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_puntos" AS cp, "A3_puntosfijos" AS pf, "A3_tipodecorredor" AS tdp WHERE tdp.id=co.tipo_de_corredor_id and ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.puntosfijos_id ' );
+    cur.execute('SELECT ins.nombre, pf.direccion, pf.nombre, pf.numero_de_contrato, pf.novedad, pf.asistio, pf.inasistio, pf.retardo, pf.devolucion FROM "A3_corredor" AS co, "A3_institucion" AS ins , "A3_corredor_guardianes" AS cp, "A3_guardianes" AS pf, "A3_tipodecorredor" AS tdp WHERE tdp.id=co.tipo_de_corredor_id and ins.id = co.institucion_id AND cp.corredor_id = co.id AND pf.id = cp.guardianes_id ' );
     c1 = cur.fetchall()
+    print(c1)
 
     if(desde!='' and hasta !=''):
         cur.execute('SELECT co.id, tdp.nombre, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion, co.hora_de_ingreso, co.hora_de_salida FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id INNER JOIN "A3_tipodecorredor" AS tdp  ON tdp.id=co.tipo_de_corredor_id WHERE co.fecha_de_creacion = %s and co.fecha_de_creacion = %s', (desde, hasta))
@@ -174,8 +174,6 @@ def general(request):
     else:
         cur.execute('SELECT co.id, tdp.nombre, co.fecha_de_creacion, us.first_name, us.last_name, co.direccion, co.hora_de_ingreso, co.hora_de_salida FROM "A3_corredor" AS co INNER JOIN "auth_user" AS us ON us.id = co.encargado_id INNER JOIN "A3_tipodecorredor" AS tdp  ON tdp.id=co.tipo_de_corredor_id ')
         corredor = cur.fetchall()
-
-    print(corredor)
 
     cur.execute('SELECT tdp.id, tdp.nombre FROM "A3_tipodecorredor" AS tdp ;')
     corlista = cur.fetchall()

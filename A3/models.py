@@ -9,14 +9,17 @@ from django.db import models
 # Create your models here.
 
  # BD de puntos fijos
-class PuntosFijos(models.Model):
+class Guardianes(models.Model):
     nombre = models.CharField(max_length=300, blank=True, null=True)
-    numero_de_chaleco = models.CharField(max_length=10, blank=True, null=True)
+    numero_de_contrato = models.CharField(max_length=10, blank=True, null=True)
     numero_de_contacto = models.CharField(max_length=15, blank=True, null=True)
     direccion = models.CharField(max_length=300, blank=True, null=True)
-    hora_de_ingreso = models.CharField(max_length=300, blank=True, null=True)
-    hora_de_salida = models.CharField(max_length=300, blank=True, null=True)
-    novedad = models.CharField(max_length=300, blank=True, null=True)
+    asistio = models.BooleanField(default=False)
+    inasistio = models.BooleanField(default=False)
+    retardo = models.BooleanField(default=False)
+    devolucion = models.BooleanField(default=False)
+    acciones_tomadas = models.CharField(max_length=300, blank=True, null=True)
+    novedad = models.TextField(blank=True)
     fecha_de_creacion = models.DateTimeField(default=datetime.now, blank=True)
     #resgistro_fotografico = models.ImageField(upload_to='registros', blank=True)
 
@@ -125,7 +128,7 @@ class Corredor(models.Model):
     tipo_de_corredor = models.ForeignKey('TipoDeCorredor', on_delete=models.CASCADE, blank=True)
     encargado = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     institucion = models.ForeignKey('Institucion', on_delete=models.CASCADE, blank=True)
-    puntos = models.ManyToManyField(PuntosFijos, blank=True)
+    guardianes = models.ManyToManyField(Guardianes, blank=True)
     fecha_de_creacion = models.DateField(blank=True)
     direccion = models.CharField(max_length=300, blank=True, null=True)
     hora_de_ingreso = models.TimeField(blank=True, null=True)
