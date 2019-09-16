@@ -136,12 +136,24 @@
   <div class="row">
 <!-- The filterable elements. Note that some have multiple class names (this can be used if they belong to multiple categories) -->
 <div class="container1">
-    {% for data in filtro %}
-        <div class="btn2 filterDiv {{ data.8 }}" onclick="filterSelection2({{ data.8 }})">{{ data.2 }}</div>
-    {% endfor %}
+{#    {% for data in filtro %}#}
+{#        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>#}
+{##}
+{#        <div id="fechafil" class="btn2 filterDiv {{ data.8 }}" onclick="filterSelection2({{ data.8 }})">{{ data.2 }}</div>#}
+{#    {% endfor %}#}
+        <select id="mySelect" onchange="myFunction({{ filtro.0.8 }})">
+        <option >--Seleccione un corredor...</option>
+            {% for data in filtro %}
+                <option  value={{ data.0 }} >{{ data.2 }}</option>
+            {% endfor %}
 
+</select>
 </div>
       </div>
+{#  <form method="post" enctype="multipart/form-data">#}
+{#      {{ form }}#}
+{#  <input type="text" name="fechab" id="fechab" class="form-control" />#}
+{#  </form>#}
 </div>
 
   <div class="container-fluid">
@@ -210,16 +222,16 @@
     }
 </style>
 <script>
-function myFunction() {
+function myFunction(num) {
 
     var x = document.getElementById("mySelect").value;
 
   document.getElementById("myInput").value = x;
 
-  console.log(window.location.host);
+  console.log(window);
 
-  window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(x);
-  {#window.location.href = "http://127.0.0.1:8080/reporte/".concat(x);#}
+  window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(num).concat("/").concat(x);
+  {#window.location.href = "http://127.0.0.1:8080/reporte/".concat(num).concat("/").concat(x);#}
 
     }
 </script>
@@ -265,15 +277,20 @@ function myFunction() {
   </script>
 
   <script>
+
       function filterSelection2(c) {
+
           window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(c);
             {#window.location.href = "http://127.0.0.1:8080/reporte/".concat(c);#}
       }
   </script>
 
   <script>
-      filterSelection("all")
+
 function filterSelection(c) {
+          window.location.href = "https://ciclovia.herokuapp.com/reporte/".concat(c).concat("/").concat(0);
+            {#window.location.href = "http://127.0.0.1:8080/reporte/".concat(c).concat("/").concat(0);#}
+
   var x, i;
   x = document.getElementsByClassName("filterDiv");
   if (c == "all") c = "";

@@ -1,0 +1,561 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      {% load static %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Corredores</title>
+  </head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <style>
+      table{
+          border-style: groove;
+      }
+      img{
+          height: 100px;
+          width: 100px;
+          object-fit: contain;
+          object-position: top 75%;
+      }
+      .my-auto{
+          padding-top: 2% !important;
+      }
+      .table td, .table th {
+          padding: unset;
+              border-top: 1px solid #f8f9fa05;
+          border-style: groove;
+          font-size: 10px;
+      }
+      body{
+          padding-left: 2%;
+          padding-right: 2%;
+          padding-top: 3%;
+      }
+      .container {
+  overflow: hidden;
+}
+
+.filterDiv {
+    float: left;
+    background-color: #2196F3;
+    color: #ffffff;
+    width: 190px;
+    line-height: 47px;
+    text-align: center;
+    margin: 4px;
+  display: none; /* Hidden by default */
+}
+
+/* The "show" class is added to the filtered elements */
+.show {
+  display: block;
+}
+
+/* Style the buttons */
+.btn {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* Add a light grey background on mouse-over */
+.btn:hover {
+  background-color: #ddd;
+}
+
+/* Add a dark background to the active button */
+.btn.active {
+  background-color: #666;
+  color: white;
+}
+   .btn2:hover {
+  background-color: #384e66;
+}
+
+/* Add a dark background to the active button */
+.btn2.active {
+  background-color: #384e66;
+  color: white;
+}
+@media screen and (max-width: 600px) {
+    .btn{
+        font-size: xx-small;
+    }
+    .btn2{
+        font-size: xx-small;
+    }
+}
+
+  </style>
+  <body>
+  <link rel="stylesheet" type="text/css" href="/Content/font-awesome/css/font-awesome.min.css" />
+
+
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm col-8" style="width: 40%; text-align: left;">
+      <h1 style="color: #007bff">Informe Ponal</h1>
+{#        <select id="mySelect" onchange="myFunction()">#}
+{#        <option >--Seleccione un corredor...</option>#}
+{#            {% for data in listacorredor %}#}
+{#                <option value={{ data.0 }}>{{ data.1 }} - {{ data.2 }}</option>#}
+{#            {% endfor %}#}
+{##}
+{#</select>#}
+
+
+{#    <form method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form }}#}
+{#    <br><br>#}
+{#    <input type="submit" value="Filtrar" type="button" class="btn btn-outline-success">#}
+{#</form>#}
+
+
+    <input style="display: none" type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar por nombre de la alerta..." title="Buscar" >
+    </div>
+    <div class="col-sm col-4" style="width: 40%; text-align: right;">
+      <button class="btn btn-primary btn-lg disabled" onclick="exportTableToExcel('tblData')">Descargar excel</button>
+  <input class="btn btn-primary btn-lg disabled" type="button" id="btnExport" value="Descargar PDF" onclick="Export()" />
+    </div>
+  </div>
+      <div class="row">
+          <!-- Control buttons -->
+<div id="myBtnContainer">
+<button class="btn active" onclick="filterSelection('all')"> Mostrar Todos</button>
+    {% for data in listacorredor %}
+        <button class="btn" onclick="filterSelection({{ data.0 }})"> {{ data.1 }}</button>
+    {% endfor %}
+</div>
+      </div>
+  <div class="row">
+<!-- The filterable elements. Note that some have multiple class names (this can be used if they belong to multiple categories) -->
+<div class="container1">
+{#    {% for data in filtro %}#}
+{#        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>#}
+{##}
+{#        <div id="fechafil" class="btn2 filterDiv {{ data.8 }}" onclick="filterSelection2({{ data.8 }})">{{ data.2 }}</div>#}
+{#    {% endfor %}#}
+        <select id="mySelect" onchange="myFunction({{ filtro.0.8 }})">
+        <option >--Seleccione un corredor...</option>
+            {% for data in filtro %}
+                <option  value={{ data.0 }} >{{ data.2 }}</option>
+            {% endfor %}
+
+</select>
+
+</div>
+      </div><br>
+{#  <form method="post" enctype="multipart/form-data">#}
+{#      {{ form }}#}
+{#  <input type="text" name="fechab" id="fechab" class="form-control" />#}
+{#  </form>#}
+</div>
+
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm table-responsive-sm">
+    <table class="table table-striped" id="tblData" class="table table-hover">
+
+  <thead>
+  <th scope="col" class="text-center" colspan="14"><img  class="rounded mx-auto d-block" src='/media/{{ imagenes.1.2 }}'></th>
+  <tr >
+      <th scope="col" class="text-center" colspan="14">SEGUIMIENTO OPERATIVO - GUARDIÁN RESPONSABLE DE CORREDOR DE CICLOVÍA</th>
+  </tr>
+    <tr>
+        <th scope="col" class="text-center" colspan="8">Programa o Corredor: {{ corredor.0.5 }}</th>
+
+        <th scope="col" class="text-center" colspan="8">Fecha: {{ corredor.0.2 }}</th>
+  </tr>
+      <tr>
+      <th scope="col" class="text-center" colspan="8">Guardián responsable de Corredor: {{ corredor.0.3 }} {{ corredor.0.4 }}</th>
+      <th scope="col" class="text-center" colspan="8">CPS / Año: {{ corredor.0.7 }}</th>
+  </tr>
+    <tr>
+
+  </tr>
+
+    <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">1. DESARROLLO DE LA JORNADA</th>
+    </tr>
+      <tr>
+        <td scope="col" class="text-center" colspan="14">{{ desarrollo.0.0 }}</td>
+    </tr>
+      <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">2. EVENTOS REALIZADOS</th>
+    </tr>
+        <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="2">Evento</th>
+        <th scope="col" class="text-center" colspan="2">Ubicación</th>
+        <th scope="col" class="text-center" colspan="2">Organizador</th>
+        <th scope="col" class="text-center" colspan="2">Hora inicio</th>
+        <th scope="col" class="text-center" colspan="2">Hora fin</th>
+        <th scope="col" class="text-center" colspan="4">Observaciones</th>
+    </tr>
+  {% for data in eventos %}
+      <tr style="background-color: white">
+        <td scope="col" class="text-center" colspan="2">{{ data.1 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.2 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.3 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.4 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.5 }}</td>
+        <td scope="col" class="text-center" colspan="4">{{ data.6 }}</td>
+    </tr>
+  {% endfor %}
+
+        <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">3. ACTIVACIONES Y PROYECTOS REALIZADOS</th>
+    </tr>
+        <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="2">Evento</th>
+        <th scope="col" class="text-center" colspan="2">Ubicación</th>
+        <th scope="col" class="text-center" colspan="2">Organizador</th>
+        <th scope="col" class="text-center" colspan="2">Hora inicio</th>
+        <th scope="col" class="text-center" colspan="2">Hora fin</th>
+        <th scope="col" class="text-center" colspan="4">Observaciones</th>
+    </tr>
+  {% for data in activaciones %}
+      <tr style="background-color: white">
+        <td scope="col" class="text-center" colspan="2">{{ data.1 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.2 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.3 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.4 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.5 }}</td>
+        <td scope="col" class="text-center" colspan="4">{{ data.6 }}</td>
+    </tr>
+  {% endfor %}
+
+        <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">4. ASISTENCIA PERSONAL GUARDIÁN</th>
+    </tr>
+    <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="1">No.</th>
+      <th scope="col" class="text-center" colspan="2">APELLIDOS Y NOMBRES</th>
+      <th scope="col" class="text-center" colspan="2">TRAMO, CORREDOR Y/O PROGRAMA</th>
+      <th scope="col" class="text-center" colspan="2">NÚMERO DE CONTACTO</th>
+      <th scope="col" class="text-center" colspan="1">ASISTIÓ</th>
+      <th scope="col" class="text-center" colspan="1">INASISTIÓ</th>
+      <th scope="col" class="text-center" colspan="1">RETARDO</th>
+      <th scope="col" class="text-center" colspan="1">DEVOLUCION</th>
+      <th scope="col" class="text-center" colspan="3">NOVEDADES Y ACCIONES TOMADAS PARA SUPLIR LA INASISTENCIA O DEVOLUCION</th>
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for corredor in data %}
+    <tr style="background-color: white">
+      <th class="my-auto text-center" scope="row my-auto" colspan="1">{{ forloop.counter }}</th>
+      <td class="my-auto text-center" colspan="2">{{ corredor.0 }}</td>
+      <td class="my-auto text-center" colspan="2">{{ corredor.1 }}</td>
+      <td class="my-auto text-center" colspan="2">{{ corredor.2 }}</td>
+      <td class="my-auto text-center" colspan="1"></td>
+      <td class="my-auto text-center" colspan="1"></td>
+      <td class="my-auto text-center" colspan="1"></td>
+      <td class="my-auto text-center" colspan="1"></td>
+      <td class="my-auto text-center" colspan="3"></td>
+
+    </tr>
+  {% endfor %}
+
+          <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">5. UNIDADES DE APOYO PUNTO FIJO</th>
+    </tr>
+    <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="1">No.</th>
+      <th scope="col" class="text-center" colspan="2">INSTITUCION O ALIANZA</th>
+      <th scope="col" class="text-center" colspan="2">LUGAR DE UBICACIÓN</th>
+      <th scope="col" class="text-center" colspan="2">NOMBRE DEL APOYO</th>
+      <th scope="col" class="text-center" colspan="1">HORA DE LLEGADA </th>
+      <th scope="col" class="text-center" colspan="1">HORA DE RETIRO</th>
+      <th scope="col" class="text-center" colspan="1">NUMERAL DE LA UNIDAD / CPS</th>
+      <th scope="col" class="text-center" colspan="4">NOVEDADES PRESENTADAS</th>
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for data in apoyo %}
+    <tr style="background-color: white">
+      <th class="my-auto text-center" scope="row my-auto" colspan="1">{{ forloop.counter }}</th>
+      <td scope="col" class="text-center" colspan="2">{{ data.1 }}</td>
+      <td scope="col" class="text-center" colspan="2">{{ data.2 }}</td>
+      <td scope="col" class="text-center" colspan="2">{{ data.3 }}</td>
+      <td scope="col" class="text-center" colspan="1">{{ data.4 }}</td>
+      <td scope="col" class="text-center" colspan="1">{{ data.5 }}</td>
+      <td scope="col" class="text-center" colspan="1">{{ data.6 }}</td>
+      <td scope="col" class="text-center" colspan="4">{{ data.7 }}</td>
+
+    </tr>
+  {% endfor %}
+        <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">6. SOLICITUDES POR PARTE DEL GUARDIÁN RESPONSABLE DE CORREDOR DE CICLOVÍA, A LA COORDINACIÓN DEL PROGRAMA</th>
+    </tr>
+          <tr style="background-color: white">
+        <td scope="col" class="text-center" colspan="14">{{ solicitudes.0.0 }}</td>
+    </tr>
+        <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">7. ACCIDENTES OCURRIDOS</th>
+    </tr>
+            <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="1">HORA INICIO</th>
+        <th scope="col" class="text-center" colspan="1">LUGAR</th>
+        <th scope="col" class="text-center" colspan="1">RUTA</th>
+        <th scope="col" class="text-center" colspan="1">NOMBRE ATENDIDO</th>
+        <th scope="col" class="text-center" colspan="1">C.C./ TI ATENDIDO</th>
+        <th scope="col" class="text-center" colspan="1">GENERO ATENDIDO</th>
+        <th scope="col" class="text-center" colspan="1">EDAD ATENDIDO</th>
+        <th scope="col" class="text-center" colspan="1">EPS ATENDIDO</th>
+        <th scope="col" class="text-center" colspan="1">TELÉFONO ATENDIDO</th>
+        <th scope="col" class="text-center" colspan="1">DIAGNÓSTICO</th>
+        <th scope="col" class="text-center" colspan="1">CAUSA</th>
+        <th scope="col" class="text-center" colspan="1">ACCIÓN FINA</th>
+        <th scope="col" class="text-center" colspan="1">UNIDAD QUE REALIZA LA ATENCION</th>
+        <th scope="col" class="text-center" colspan="1">HORA FINAL</th>
+    </tr>
+
+              {% for accidentes in accidente %}
+             <tr style="background-color: white">
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.1 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.2 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.3 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.4 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.5 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.6 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.7 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.15 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.8 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.9 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.10 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.11 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.12 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ accidentes.13 }}</td>
+        </tr>
+              {% endfor %}
+<tr>
+        <td scope="col" class="text-center" colspan="14"><p style="font-size: x-small;">Acción Final: G: Atendido por el Guardián, A: Traslado ambulancia (Especificar Móvil que Trasladó), R: Atendido por Patrulla de Reacción, P: traslado particular.
+Causa: CH: Choque, V: Velocidad, A: Agresión, E: Enfermedad, AT: Accidente de Transito, AB: Atropellado por Bicicleta, FM: Falla Mecánica, Vía: Estado de la Vía, FC: Factores Climáticos, S: Suicidio, P: Puente, PB: Varias Personas en Bicicleta, UV: Uso Inadecuado de Vías, MA: Mordedura de Animal, MB: Mal Manejo de Bicicleta, Otra
+            (Especificar cual).</p></td>
+    </tr>
+          <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="14">8. UNIDADES SOLICITADAS DE OTRAS INSTITUCIONES</th>
+    </tr>
+            <tr style="background-color: darkgray">
+        <th scope="col" class="text-center" colspan="2">LUGAR</th>
+        <th scope="col" class="text-center" colspan="2">NOVEDAD</th>
+        <th scope="col" class="text-center" colspan="2">GUARDIAN QUE SOLICITA</th>
+        <th scope="col" class="text-center" colspan="1">HORA DE SOLICITUD</th>
+        <th scope="col" class="text-center" colspan="1">HORA ATENCIÓN</th>
+        <th scope="col" class="text-center" colspan="1">N° UNIDAD</th>
+        <th scope="col" class="text-center" colspan="1">N° MOVIL O PLACA</th>
+        <th scope="col" class="text-center" colspan="1">HORA FINALIZACION</th>
+        <th scope="col" class="text-center" colspan="3">ACCIÓN FINAL</th>
+
+    </tr>
+
+              {% for data in otras %}
+             <tr style="background-color: white">
+        <td scope="col" class="text-center" colspan="2">{{ data.1 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.2 }}</td>
+        <td scope="col" class="text-center" colspan="2">{{ data.3 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ data.4 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ data.5 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ data.6 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ data.7 }}</td>
+        <td scope="col" class="text-center" colspan="1">{{ data.8 }}</td>
+        <td scope="col" class="text-center" colspan="3">{{ data.9 }}</td>
+
+        </tr>
+              {% endfor %}
+<tr>
+        <td scope="col" class="text-center" colspan="14"><p style="font-size: x-small;"> TIPO DE UNIDAD: 551 :GRUA,552 : AMBULANCIA,553: UNIDAD POLICIA DE VIGILANCIA, 554:UNIDAD DE POLICIA DE TRANSITO, 557: BOMBEROS, SEM: SEMAFORIZACIÓN, OTRA (ESPECIFIQUE CUAL)</p></td>
+    </tr>
+
+{#            <tr style="background-color: darkgray">#}
+{#        <th scope="col" class="text-center" colspan="14">9. REPORTE DE PRODUCTO NO CONFORME</th>#}
+{#    </tr>#}
+{#            <tr style="background-color: darkgray">#}
+{#        <th scope="col" class="text-center" rowspan="3">REQUISITO</th>#}
+{#        <th scope="col" class="text-center" ></th>#}
+{#        <th scope="col" class="text-center" rowspan="1">SE CUMPLE CON EL REQUISITO</th>#}
+{#        <th scope="col" class="text-center" rowspan="3">DESCRIPCIÓN DE LA NO CONFORMIDAD</th>#}
+{#        <th scope="col" class="text-center" rowspan="3">TRATAMIENTO</th>#}
+{#        <th scope="col" class="text-center" rowspan="3">DESCRIPCIÓN DE LA ACCIÓN TOMADA</th>#}
+{##}
+{#    </tr>#}
+{##}
+{#               <tr style="background-color: white">#}
+{#        <td scope="col" class="text-center" colspan="1">a</td>#}
+{##}
+{#        </tr>#}
+  </tbody>
+</table>
+    </div>
+  </div>
+</div>
+<!-- you need to include the shieldui css and js assets in order for the components to work -->
+<link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jszip.min.js"></script>
+
+
+
+<style>
+    #exportButton {
+        border-radius: 0;
+    }
+</style>
+<script>
+function myFunction(num) {
+
+    var x = document.getElementById("mySelect").value;
+
+  document.getElementById("myInput").value = x;
+
+  console.log(window);
+
+  window.location.href = "https://ciclovia.herokuapp.com/operativo/".concat(num).concat("/").concat(x);
+  {#window.location.href = "http://127.0.0.1:8080/operativo/".concat(num).concat("/").concat(x);#}
+
+    }
+</script>
+  <script>
+   $("#id_f1").click(function(){
+        $(this).prop('type', 'date');
+  });
+      $("#id_f2").click(function(){
+        $(this).prop('type', 'date');
+  });
+</script>
+  <script>
+      function exportTableToExcel(tableID, filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+
+    // Create download link element
+    downloadLink = document.createElement("a");
+
+    document.body.appendChild(downloadLink);
+
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+        // Setting the file name
+        downloadLink.download = filename;
+
+        //triggering the function
+        downloadLink.click();
+    }
+}
+  </script>
+
+  <script>
+
+      function filterSelection2(c) {
+
+          window.location.href = "https://ciclovia.herokuapp.com/operativo/".concat(c);
+            {#window.location.href = "http://127.0.0.1:8080/operativo/".concat(c);#}
+      }
+  </script>
+
+  <script>
+
+function filterSelection(c) {
+          window.location.href = "https://ciclovia.herokuapp.com/operativo/".concat(c).concat("/").concat(0);
+            {#window.location.href = "http://127.0.0.1:8080/operativo/".concat(c).concat("/").concat(0);#}
+
+  var x, i;
+  x = document.getElementsByClassName("filterDiv");
+  if (c == "all") c = "";
+  // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
+  for (i = 0; i < x.length; i++) {
+    w3RemoveClass(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+  }
+}
+
+// Show filtered elements
+function w3AddClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) == -1) {
+      element.className += " " + arr2[i];
+    }
+  }
+}
+
+// Hide elements that are not selected
+function w3RemoveClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);
+    }
+  }
+  element.className = arr1.join(" ");
+}
+
+// Add active class to the current control button (highlight it)
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btn");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function() {
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+  </script>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script type="text/javascript">
+        function Export() {
+            html2canvas(document.getElementById('tblData'), {
+                onrendered: function (canvas) {
+                    var data = canvas.toDataURL();
+                    var docDefinition = {
+                        content: [{
+                            image: data,
+                            width: 500
+                        }]
+                    };
+                    pdfMake.createPdf(docDefinition).download("operativo.pdf");
+                }
+            });
+        }
+    </script>
+
+  </body>
+</html>
